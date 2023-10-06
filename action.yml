@@ -188,6 +188,20 @@ runs:
       run: |
         CA_GH_ACTION_ONLY_YAML=true
         echo "CA_GH_ACTION_ONLY_YAML=${CA_GH_ACTION_ONLY_YAML}" >> $GITHUB_ENV
+        
+    - name: Export User Managed Identity arguments to environment variable
+      if: ${{ inputs.userManagedIdentities != '' }}
+      shell: bash
+      run: |
+        CA_GH_ACTION_CONTAINER_APP_USER_MANAGED_IDENTITIES_ARG="--user-assigned ${{ inputs.userManagedIdentities }}
+        echo "CA_GH_ACTION_CONTAINER_APP_USER_MANAGED_IDENTITIES_ARG=${CA_GH_ACTION_CONTAINER_APP_USER_MANAGED_IDENTITIES_ARG}" >> GITHUB_ENV
+        
+    - name: Export System Managed Identity argument to environment variable
+      if: ${{ inputs.systemManagedIdentity == 'true' }}
+      shell: bash
+      run: |
+        CA_GH_ACTION_CONTAINER_APP_SYSTEM_MANAGED_IDENTITY_ARG="--system-assigned"
+        echo "CA_GH_ACTION_CONTAINER_APP_SYSTEM_MANAGED_IDENTITY_ARG=${CA_GH_ACTION_CONTAINER_APP_SYSTEM_MANAGED_IDENTITY_ARG}" >> GITHUB_ENV        
 
     - name: Set Azure CLI to dynamically install missing extensions
       shell: bash
@@ -389,20 +403,6 @@ runs:
           echo "CA_GH_ACTION_CONTAINER_APP_ENVIRONMENT=${CA_GH_ACTION_TEMP_ENV_NAME}" >> $GITHUB_ENV; \
           echo "CA_GH_ACTION_ENVIRONMENT_EXISTS=true" >> $GITHUB_ENV; \
         fi
-        
-    - name: Export User Managed Identity arguments to environment variable
-      if: ${{ inputs.userManagedIdentities != '' }}
-      shell: bash
-      run: |
-        CA_GH_ACTION_CONTAINER_APP_USER_MANAGED_IDENTITIES_ARG="--user-assigned ${{ inputs.userManagedIdentities }}
-        echo "CA_GH_ACTION_CONTAINER_APP_USER_MANAGED_IDENTITIES_ARG=${CA_GH_ACTION_CONTAINER_APP_USER_MANAGED_IDENTITIES_ARG}" >> GITHUB_ENV
-        
-    - name: Export System Managed Identity argument to environment variable
-      if: ${{ inputs.systemManagedIdentity == 'true' }}
-      shell: bash
-      run: |
-        CA_GH_ACTION_CONTAINER_APP_SYSTEM_MANAGED_IDENTITY_ARG="--system-assigned"
-        echo "CA_GH_ACTION_CONTAINER_APP_SYSTEM_MANAGED_IDENTITY_ARG=${CA_GH_ACTION_CONTAINER_APP_SYSTEM_MANAGED_IDENTITY_ARG}" >> GITHUB_ENV
         
     - name: Create Container App environment if the Container App environment doesn't exist
       if: ${{ env.CA_GH_ACTION_ENVIRONMENT_EXISTS == 'false' }}
