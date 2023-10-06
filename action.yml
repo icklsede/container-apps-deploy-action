@@ -214,9 +214,7 @@ runs:
       if: ${{ inputs.acrIdentity != '' && inputs.acrName != '' }}
       shell: bash
       run: |
-        CA_GH_ACTION_CONTAINER_APP_ACR_IDENTITY_ARG="
-          --registry-identity ${{ inputs.acrIdentity }}
-          --registry-server ${{ inputs.acrName }}.azurecr.io "
+        CA_GH_ACTION_CONTAINER_APP_ACR_IDENTITY_ARG="--registry-identity ${{ inputs.acrIdentity }} --registry-server ${{ inputs.acrName }}.azurecr.io"
         echo "CA_GH_ACTION_CONTAINER_APP_ACR_IDENTITY_ARG=${CA_GH_ACTION_CONTAINER_APP_ACR_IDENTITY_ARG}" >> $GITHUB_ENV
 
     - name: Set Azure CLI to dynamically install missing extensions
