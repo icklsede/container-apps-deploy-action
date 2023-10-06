@@ -211,7 +211,7 @@ runs:
         echo "CA_GH_ACTION_CONTAINER_APP_SYSTEM_MANAGED_IDENTITY_ARG=${CA_GH_ACTION_CONTAINER_APP_SYSTEM_MANAGED_IDENTITY_ARG}" >> $GITHUB_ENV
         
     - name: Export ACR Identity arguments to environment variable
-      if: ${{ inputs.acrIdentity != '' && inputs.acrName != '' && inputs.acrUsername != '' }}
+      if: ${{ inputs.acrIdentity != '' && inputs.acrName != '' }}
       shell: bash
       run: |
         CA_GH_ACTION_CONTAINER_APP_ACR_IDENTITY_ARG="
