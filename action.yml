@@ -137,6 +137,10 @@ inputs:
       'A space separated list of User Managed Identities (resource path) to assign to the container app.'
     required: false
     default: ""
+  systemManagedIdentity:
+    description: 'Assign a System Managed Identity to the container app'
+    required: false
+    default: false
 
 runs:
   using: "composite"
