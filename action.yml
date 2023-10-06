@@ -610,7 +610,7 @@ runs:
           ${{ env.CA_GH_ACTION_CONTAINER_APP_ENVIRONMENT_VARIABLES_ARG }}
           
     - name: Assign User Managed Identities to the Container App from provided arguments
-      if: ${{ env.CA_GH_ACTION_YAML_PROVIDED != 'true' && env.CA_GH_ACTION_RESOURCE_EXISTS == 'false' && inputs.userManagedIdentities != "" }}
+      if: ${{ env.CA_GH_ACTION_YAML_PROVIDED != 'true' && env.CA_GH_ACTION_RESOURCE_EXISTS == 'false' && inputs.userManagedIdentities != '' }}
       shell: bash
       run: |
         az containerapp identity assign \
