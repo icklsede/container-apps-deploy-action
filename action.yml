@@ -132,6 +132,10 @@ inputs:
       this GitHub Action.'
     required: false
     default: false
+  userManagedIdentities:
+    description: |
+      'A space separated list of User Managed Identities (resource path) to assign to the container app.'
+    required: false
 
 runs:
   using: "composite"
@@ -603,7 +607,16 @@ runs:
           ${{ env.CA_GH_ACTION_TARGET_PORT_ARG }} \
           ${{ env.CA_GH_ACTION_REGISTRY_LOGIN_ARG }} \
           ${{ env.CA_GH_ACTION_CONTAINER_APP_ENVIRONMENT_VARIABLES_ARG }}
-
+          
+    - name: Assign User Managed Identities to the Container App from provided arguments
+      if: ${{ env.CA_GH_ACTION_YAML_PROVIDED != 'true' && env.CA_GH_ACTION_RESOURCE_EXISTS == 'false' }}
+      shell: bash
+      run: |
+        az containerapp identity assign \
+          -n ${{ inputs.containerAppName }}
+          -g CA_GH_ACTION_RESOURCE_GROUP
+          --user-assigned "${{ inputs.userManagedIdentities"
+          
     - name: Update the existing Container App from a YAML configuration file
       if: ${{ env.CA_GH_ACTION_YAML_PROVIDED == 'true' && env.CA_GH_ACTION_RESOURCE_EXISTS == 'true' }}
       shell: bash
