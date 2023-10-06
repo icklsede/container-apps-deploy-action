@@ -141,6 +141,13 @@ inputs:
     description: 'Assign a System Managed Identity to the container app'
     required: false
     default: false
+  registryIdentity:
+    description: |
+      'The Managed Identity to authenticate with the registry server instead of username/password. Use a resource ID
+      or 'system' for user-defined and system-defined identities, respectively. The registry must be an ACR. 
+      If possible, an 'acrpull' role assignemnt will be created for the identity automatically.'
+    required: false
+    default: ""
 
 runs:
   using: "composite"
@@ -201,7 +208,14 @@ runs:
       shell: bash
       run: |
         CA_GH_ACTION_CONTAINER_APP_SYSTEM_MANAGED_IDENTITY_ARG="--system-assigned"
-        echo "CA_GH_ACTION_CONTAINER_APP_SYSTEM_MANAGED_IDENTITY_ARG=${CA_GH_ACTION_CONTAINER_APP_SYSTEM_MANAGED_IDENTITY_ARG}" >> $GITHUB_ENV        
+        echo "CA_GH_ACTION_CONTAINER_APP_SYSTEM_MANAGED_IDENTITY_ARG=${CA_GH_ACTION_CONTAINER_APP_SYSTEM_MANAGED_IDENTITY_ARG}" >> $GITHUB_ENV
+        
+    - name: Export Registry Identity arguments to environment variable
+      if: ${{ inputs.registryIdentity != '' }}
+      shell: bash
+      run: |
+        CA_GH_ACTION_CONTAINER_APP_REGISTRY_IDENTITY_ARG="--registry-identity ${{ inputs.registryIdentity }}"
+        echo "CA_GH_ACTION_CONTAINER_APP_REGISTRY_IDENTITY_ARG=${CA_GH_ACTION_CONTAINER_APP_REGISTRY_IDENTITY_ARG}" >> $GITHUB_ENV
 
     - name: Set Azure CLI to dynamically install missing extensions
       shell: bash
@@ -613,6 +627,7 @@ runs:
           -n ${{ inputs.containerAppName }} \
           ${{ env.CA_GH_ACTION_CONTAINER_APP_USER_MANAGED_IDENTITIES_ARG }} \
           ${{ env.CA_GH_ACTION_CONTAINER_APP_SYSTEM_MANAGED_IDENTITY_ARG }} \
+          ${{ env.CA_GH_ACTION_REGISTRY_IDENTITY_ARG }} \
           --yaml ${{ inputs.yamlConfigPath }}
 
     - name: Create the Container App from provided arguments
@@ -629,7 +644,8 @@ runs:
           ${{ env.CA_GH_ACTION_REGISTRY_LOGIN_ARG }} \
           ${{ env.CA_GH_ACTION_CONTAINER_APP_ENVIRONMENT_VARIABLES_ARG }} \
           ${{ env.CA_GH_ACTION_CONTAINER_APP_USER_MANAGED_IDENTITIES_ARG }} \
-          ${{ env.CA_GH_ACTION_CONTAINER_APP_SYSTEM_MANAGED_IDENTITY_ARG }}
+          ${{ env.CA_GH_ACTION_CONTAINER_APP_SYSTEM_MANAGED_IDENTITY_ARG }} \
+          ${{ env.CA_GH_ACTION_REGISTRY_IDENTITY_ARG }}
           
     - name: Update the existing Container App from a YAML configuration file
       if: ${{ env.CA_GH_ACTION_YAML_PROVIDED == 'true' && env.CA_GH_ACTION_RESOURCE_EXISTS == 'true' }}
