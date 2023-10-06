@@ -627,7 +627,7 @@ runs:
           -n ${{ inputs.containerAppName }} \
           ${{ env.CA_GH_ACTION_CONTAINER_APP_USER_MANAGED_IDENTITY_ARG }} \
           ${{ env.CA_GH_ACTION_CONTAINER_APP_SYSTEM_MANAGED_IDENTITY_ARG }} \
-          ${{ env.CA_GH_ACTION_REGISTRY_IDENTITY_ARG }} \
+          ${{ env.CA_GH_ACTION_CONTAINER_APP_REGISTRY_IDENTITY_ARG }} \
           --yaml ${{ inputs.yamlConfigPath }}
 
     - name: Create the Container App from provided arguments
@@ -645,7 +645,7 @@ runs:
           ${{ env.CA_GH_ACTION_CONTAINER_APP_ENVIRONMENT_VARIABLES_ARG }} \
           ${{ env.CA_GH_ACTION_CONTAINER_APP_USER_MANAGED_IDENTITY_ARG }} \
           ${{ env.CA_GH_ACTION_CONTAINER_APP_SYSTEM_MANAGED_IDENTITY_ARG }} \
-          ${{ env.CA_GH_ACTION_REGISTRY_IDENTITY_ARG }}
+          ${{ env.CA_GH_ACTION_CONTAINER_APP_REGISTRY_IDENTITY_ARG }}
           
     - name: Update the existing Container App from a YAML configuration file
       if: ${{ env.CA_GH_ACTION_YAML_PROVIDED == 'true' && env.CA_GH_ACTION_RESOURCE_EXISTS == 'true' }}
